@@ -1,0 +1,9 @@
+mount-dir: "./dbs-replica"
+data-dir: "./.litefs-replica"
+exec: sleep inf
+static:
+  primary: false
+  hostname: "primary"
+  advertise-url: "http://localhost:20300"
+http:
+  addr: ":20301"

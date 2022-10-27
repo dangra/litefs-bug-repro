@@ -1,0 +1,9 @@
+mount-dir: "./dbs-primary"
+data-dir: "./.litefs-primary"
+exec: sleep inf
+static:
+  primary: true
+  hostname: "${HOSTNAME}"
+  advertise-url: "http://${HOSTNAME}:20300"
+http:
+  addr: ":20300"
