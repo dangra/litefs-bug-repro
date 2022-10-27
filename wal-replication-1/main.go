@@ -19,15 +19,15 @@ CREATE TABLE IF NOT EXISTS mytable (
 	output text not null
 )
 `
-	insertQuery = `INSERT INTO mytable (name, output) values (?, ?)`
-	selectQuery = `SELECT COUNT(*) FROM mytable WHERE name LIKE '%2%'`
-	primaryTick = time.Second / 1000
-	replicaTick = time.Second / 1000
+	insertQuery  = `INSERT INTO mytable (name, output) values (?, ?)`
+	selectQuery  = `SELECT COUNT(*) FROM mytable WHERE name LIKE '%2%'`
+	producerTick = time.Second / 1000
+	consumerTick = time.Second / 1000
 )
 
 var pathMap = map[string]string{
-	"primary": "file:./dbs-primary/state.db?_journal=WAL",
-	"replica": "file:./dbs-replica/state.db?_journal=WAL",
+	"producer": "file:./dbs-primary/state.db?_journal=WAL",
+	"consumer": "file:./dbs-replica/state.db?_journal=WAL",
 }
 
 var (
@@ -39,12 +39,12 @@ func main() {
 	flag.Parse()
 	var err error
 	switch flag.Arg(0) {
-	case "primary":
+	case "producer":
 		err = runPrimary()
-	case "replica":
+	case "consumer":
 		err = runReplica()
 	default:
-		fmt.Printf("Usage:\n go run . [-z] <primary|replica>\n")
+		fmt.Printf("Usage:\n go run . [-z] <producer|consumer>\n")
 		return
 	}
 	log.Fatal(err)
@@ -59,7 +59,7 @@ func openDb(role string) (*sql.DB, error) {
 }
 
 func runPrimary() error {
-	db, err := openDb("primary")
+	db, err := openDb("producer")
 	if err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func runPrimary() error {
 		panic(err)
 	}
 
-	for t := range time.Tick(primaryTick) {
+	for t := range time.Tick(producerTick) {
 		size := rand.Intn(*blobSize)
 		blob := randString(size)
 		_, err := db.Exec(insertQuery, t.String(), blob)
@@ -87,14 +87,14 @@ func runPrimary() error {
 }
 
 func runReplica() error {
-	db, err := openDb("replica")
+	db, err := openDb("consumer")
 	if err != nil {
 		return err
 	}
 	db.Ping()
 
 	var count int
-	for t := range time.Tick(replicaTick) {
+	for t := range time.Tick(consumerTick) {
 		if err := db.QueryRow(selectQuery).Scan(&count); err != nil {
 			return err
 		}
