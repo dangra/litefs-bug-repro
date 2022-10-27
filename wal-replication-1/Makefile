@@ -6,8 +6,8 @@ clean-replica:
 	rm -rf dbs-replica .litefs-replica
 	mkdir -p dbs-replica
 
-litefs-primary: clean-primary
+primary: clean-primary
 	litefs -config litefs-primary.yml
 
-litefs-replica: clean-replica
+replica: clean-replica
 	litefs -config litefs-replica.yml
