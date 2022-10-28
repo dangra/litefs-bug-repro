@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS mytable (
 	insertQuery  = `INSERT INTO mytable (name, output) values (?, ?)`
 	selectQuery  = `SELECT COUNT(*) FROM mytable WHERE name LIKE '%2%'`
 	producerTick = time.Second / 1000
-	consumerTick = time.Second / 1000
+	consumerTick = time.Second / 100
 )
 
 var pathMap = map[string]string{
