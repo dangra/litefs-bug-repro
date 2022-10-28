@@ -13,7 +13,7 @@ import (
 
 var (
 	dropTable    = flag.Bool("z", false, "Recreate tables")
-	blobSize     = flag.Int("s", 2000000, "Max value size of the blob field")
+	blobSize     = flag.Int("s", 1000, "Max value size of the blob field")
 	journalMode  = flag.String("j", "WAL", "SQLite journal mode")
 	databaseName = flag.String("n", "state.db", "Database name")
 )
