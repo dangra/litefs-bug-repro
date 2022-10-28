@@ -13,23 +13,18 @@ import (
 
 var (
 	dropTable    = flag.Bool("z", false, "Recreate tables")
-	blobSize     = flag.Int("s", 1000, "Max value size of the blob field")
+	blobSize     = flag.Int("s", 10000, "Max value size of the blob field")
 	journalMode  = flag.String("j", "WAL", "SQLite journal mode")
 	databaseName = flag.String("n", "state.db", "Database name")
 )
 
 const (
-	dropQuery   = `DROP TABLE IF EXISTS mytable`
-	createQuery = `
-CREATE TABLE IF NOT EXISTS mytable (
-	name string not null,
-	output text not null
-)
-`
-	insertQuery  = `INSERT INTO mytable (name, output) values (?, ?)`
-	selectQuery  = `SELECT COUNT(*) FROM mytable WHERE name LIKE '%2%'`
+	dropQuery    = `DROP TABLE IF EXISTS t`
+	createQuery  = `CREATE TABLE IF NOT EXISTS t (a string, b text)`
+	insertQuery  = `INSERT INTO t (a, b) values (?, ?)`
+	selectQuery  = `SELECT COUNT(*) FROM t WHERE a LIKE '%2%'`
 	producerTick = time.Second / 1000
-	consumerTick = time.Second / 100
+	consumerTick = time.Second / 10
 )
 
 var pathMap = map[string]string{
