@@ -42,6 +42,7 @@ func main() {
 		err = runReplica()
 	default:
 		fmt.Printf("Usage:\n go run . [-z] <producer|consumer>\n")
+		flag.PrintDefaults()
 		return
 	}
 	log.Fatal(err)
