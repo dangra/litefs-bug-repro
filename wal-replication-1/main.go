@@ -11,6 +11,13 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+var (
+	dropTable    = flag.Bool("z", false, "Recreate tables")
+	blobSize     = flag.Int("s", 2000000, "Max value size of the blob field")
+	journalMode  = flag.String("j", "WAL", "SQLite journal mode")
+	databaseName = flag.String("n", "state.db", "Database name")
+)
+
 const (
 	dropQuery   = `DROP TABLE IF EXISTS mytable`
 	createQuery = `
@@ -26,14 +33,9 @@ CREATE TABLE IF NOT EXISTS mytable (
 )
 
 var pathMap = map[string]string{
-	"producer": "file:./dbs-primary/state.db?_journal=WAL",
-	"consumer": "file:./dbs-replica/state.db?_journal=WAL",
+	"producer": "file:./dbs-primary",
+	"consumer": "file:./dbs-replica",
 }
-
-var (
-	dropTable = flag.Bool("z", false, "Recreate tables")
-	blobSize  = flag.Int("s", 2000000, "Recreate tables")
-)
 
 func main() {
 	flag.Parse()
@@ -55,7 +57,8 @@ func openDb(role string) (*sql.DB, error) {
 	if !ok {
 		return nil, fmt.Errorf("Role %s not found", role)
 	}
-	return sql.Open("sqlite3", path)
+	dsn := fmt.Sprintf("%s/%s?_journal=%s", path, *databaseName, *journalMode)
+	return sql.Open("sqlite3", dsn)
 }
 
 func runPrimary() error {
