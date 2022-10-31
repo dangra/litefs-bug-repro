@@ -54,6 +54,7 @@ func openDb(role string) (*sql.DB, error) {
 		return nil, fmt.Errorf("Role %s not found", role)
 	}
 	dsn := fmt.Sprintf("%s/%s?_journal=%s", path, *databaseName, *journalMode)
+	fmt.Println("DSN: ", dsn)
 	return sql.Open("sqlite3", dsn)
 }
 
@@ -97,7 +98,7 @@ func runReplica() error {
 		if err := db.QueryRow(selectQuery).Scan(&count); err != nil {
 			return err
 		}
-		fmt.Println(t.String(), count)
+		fmt.Println(t.Truncate(time.Millisecond), count)
 	}
 	return nil
 }
