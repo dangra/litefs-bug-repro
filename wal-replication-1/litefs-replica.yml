@@ -1,9 +1,15 @@
-mount-dir: "./dbs-replica"
-data-dir: "./.litefs-replica"
 exec: sleep inf
-static:
-  primary: false
-  hostname: "primary"
+
+fuse:
+  dir: "./dbs-replica"
+
+data:
+  dir: "./.litefs-replica"
+
+lease:
+  type: "static"
+  hostname: "localhost:20300"
   advertise-url: "http://localhost:20300"
+
 http:
   addr: ":20301"

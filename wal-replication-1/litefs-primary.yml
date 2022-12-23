@@ -1,9 +1,16 @@
-mount-dir: "./dbs-primary"
-data-dir: "./.litefs-primary"
 exec: sleep inf
-static:
-  primary: true
+
+fuse:
+  dir: "./dbs-primary"
+
+data:
+  dir: "./.litefs-primary"
+
+lease:
+  type: "static"
+  candidate: true
   hostname: "${HOSTNAME}"
   advertise-url: "http://${HOSTNAME}:20300"
+
 http:
   addr: ":20300"

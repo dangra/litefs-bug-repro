@@ -7,7 +7,9 @@ clean-replica:
 	mkdir -p dbs-replica
 
 primary: clean-primary
-	litefs -config litefs-primary.yml
+	-umount -l dbs-primary
+	litefs mount -config litefs-primary.yml
 
 replica: clean-replica
-	litefs -config litefs-replica.yml
+	-umount -l dbs-primary
+	litefs mount -config litefs-replica.yml
