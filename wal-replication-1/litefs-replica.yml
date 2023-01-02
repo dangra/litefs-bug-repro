@@ -10,6 +10,7 @@ lease:
   type: "static"
   hostname: "localhost:20300"
   advertise-url: "http://localhost:20300"
+  candidate: false
 
 http:
   addr: ":20301"
